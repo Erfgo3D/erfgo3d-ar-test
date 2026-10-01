@@ -126,20 +126,13 @@
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
   >
-    <a-assets>
-      <a-asset-item
-        id="ar-model"
-        src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.1.4/examples/image-tracking/assets/card-example/softmind/scene.gltf">
-      </a-asset-item>
-    </a-assets>
-
     <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false"></a-camera>
 
     <a-entity id="target" mindar-image-target="targetIndex: 0">
+      <!-- Het model wordt via het script hieronder ingesteld (standaard Testbox_1cm.glb, of ?m=bestandsnaam.glb) -->
       <a-gltf-model
         id="ar-object"
-        src="#ar-model"
-        position="0 0 0.1"
+        position="0 0 0"
         rotation="0 0 0"
         scale="0.05 0.05 0.05">
       </a-gltf-model>
@@ -155,7 +148,8 @@
 
     // Kalibratie via URL-parameters, zodat je niet telkens opnieuw hoeft te uploaden.
     // Voorbeeld: https://.../erfgo3d-ar-test/?s=0.01&x=0&y=0&z=0&rx=0&ry=0&rz=0
-    //   s  = schaal (uniform)
+    //   m  = bestandsnaam van het .glb-model (standaard Testbox_1cm.glb)
+    //   s  = schaal (uniform, standaard 0.01)
     //   x, y, z = positie t.o.v. het midden van de marker
     //   rx, ry, rz = rotatie in graden
     // Zonder parameters gelden de standaardwaarden hieronder.
@@ -167,6 +161,8 @@
       };
       const s = n('s', 0.01);
       const obj = document.getElementById('ar-object');
+      // Model: standaard Testbox_1cm.glb in dezelfde map, of ?m=ander-bestand.glb
+      obj.setAttribute('gltf-model', p.get('m') || 'Testbox_1cm.glb');
       obj.setAttribute('scale', `${s} ${s} ${s}`);
       obj.setAttribute('position', `${n('x', 0)} ${n('y', 0)} ${n('z', 0)}`);
       obj.setAttribute('rotation', `${n('rx', 0)} ${n('ry', 0)} ${n('rz', 0)}`);
