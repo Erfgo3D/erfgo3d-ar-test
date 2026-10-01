@@ -153,6 +153,25 @@
       document.getElementById('loading').style.display = 'none';
     });
 
+    // Kalibratie via URL-parameters, zodat je niet telkens opnieuw hoeft te uploaden.
+    // Voorbeeld: https://.../erfgo3d-ar-test/?s=0.01&x=0&y=0&z=0&rx=0&ry=0&rz=0
+    //   s  = schaal (uniform)
+    //   x, y, z = positie t.o.v. het midden van de marker
+    //   rx, ry, rz = rotatie in graden
+    // Zonder parameters gelden de standaardwaarden hieronder.
+    (function () {
+      const p = new URLSearchParams(location.search);
+      const n = (key, fallback) => {
+        const v = parseFloat(p.get(key));
+        return Number.isFinite(v) ? v : fallback;
+      };
+      const s = n('s', 0.01);
+      const obj = document.getElementById('ar-object');
+      obj.setAttribute('scale', `${s} ${s} ${s}`);
+      obj.setAttribute('position', `${n('x', 0)} ${n('y', 0)} ${n('z', 0)}`);
+      obj.setAttribute('rotation', `${n('rx', 0)} ${n('ry', 0)} ${n('rz', 0)}`);
+    })();
+
     // Instructie-overlay verbergen zodra de marker gevonden is, terugtonen bij verlies
     sceneEl.addEventListener('targetFound', () => {
       document.getElementById('instructions').style.opacity = '0';
